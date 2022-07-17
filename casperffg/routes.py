@@ -5,30 +5,32 @@ Created on Mon Mar 25 19:36:30 2019
 
 @author: Eric
 """
-import sys,os
+
+import os
+import sys
+import time
+
+from base_comm import comm3
+from core import return_json_response,get_params_in_request
+from flask import request,render_template
+
+from casperffg import Block, Vote
+
 if os.path.join(sys.path[0], '..') not in sys.path:
   sys.path.insert(1, os.path.join(sys.path[0], '..'))
   
-from core import return_json_response,get_params_in_request
-from flask import request,render_template
-from base_comm import comm3
-import time
-from casperffg import Block, Vote
-
-num_validator = 2
-validator_set = list(range(0,num_validator))    # all validators
-initial_validator = list(range(0,num_validator)) # set of initial validators for the genesis block
-block_pro_interval = 100
-epoch_len = 2
-avg_latency = 100
+NUM_VALIDATOR = 2
+BLOCK_PRO_INTERVAL = 100
+EPOCH_LEN = 2
+AVG_LATENCY = 100
+validator_set = list(range(0,NUM_VALIDATOR))    # all validators
+initial_validator = list(range(0,NUM_VALIDATOR)) # set of initial validators for the genesis block
 
 #the blockchian object means one validator
 def casperffg_route_definitions(blockchain,app):
   
-  
   @app.route('/casperffg')
   def casperffg_index():
-    
     # you can set exp_ID and node_ID when server is on.
     experimentId = None
     if not blockchain.exp_ID:
@@ -66,8 +68,6 @@ def casperffg_route_definitions(blockchain,app):
       ratio_forked_justified = float(num_justified_in_fork) / float(sum)
       main_chain_size = blockchain.highest_justified_checkpoint.height + 1
 
-
-
       response = {
           'No Of Finalized Checkpoint:': num_finalized,
           'No Of Justified Checkpoint:': num_justified,
@@ -80,7 +80,6 @@ def casperffg_route_definitions(blockchain,app):
           'Vote counts': blockchain.vote_count
       }
       return return_json_response(request, response)
-
 
   @app.route("/casperffg/view_chain", methods=["GET", "POST"])
   def casper_view():
@@ -105,7 +104,6 @@ def casperffg_route_definitions(blockchain,app):
             "id": blockchain.id
         }
     return  return_json_response(request, resp)
-
 
   @app.route("/one_tick", methods = ["POST"])
   def one_tick():
