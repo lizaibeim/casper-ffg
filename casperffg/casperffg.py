@@ -30,24 +30,26 @@ avg_latency = 100
 
 
 class Block():
-    """Each node adds a new block to the blockchain between every block_proposal_interval(eg.100tick(s) for one block)
-        Args:
-            parent: parent block
-            final_dynasty: a committed blocks' current dynasty
     """
+    Each node adds a new block to the blockchain between every block_proposal_interval(eg.100tick(s) for one block)
+    Args:
+        parent: parent block
+        final_dynasty: a committed blocks' current dynasty
+    """
+    
     def __init__(self, parent_hash=None, parent_height=None, transactions=None, timestamp=None):
         """
         Each block needs to be signaed by 2/3 previous dynasties and current dynasties.
 
         Attributes:
-            timestamp: current time
-            transaction: transactions
-            pre_hash: hash of the parent block
-            height: height of the block
-           # pre_dynasty: the previous dynasty to commit voting
-           # cur_dynasty: the current dynasty to commit voting
-           # next_dynasty: next dynasty generated from parent's cur_dynasty)
-            hash: hash of the block
+          timestamp: current time
+          transaction: transactions
+          pre_hash: hash of the parent block
+          height: height of the block
+        # pre_dynasty: the previous dynasty to commit voting
+        # cur_dynasty: the current dynasty to commit voting
+        # next_dynasty: next dynasty generated from parent's cur_dynasty)
+          hash: hash of the block
 
         :param parent:  The parent of block
         :param final_dynasties: A set of finalized dynasties
@@ -61,19 +63,22 @@ class Block():
             self.transactions = []
             self.pre_hash = 0
             self.height = 0
-            #self.pre_dynasty = self.cur_dynasty = Dynasty(initial_validator)
-            #self.nex_dynasty = self.generate_nex_dynasty(self.cur_dynasty.id)
+          # self.pre_dynasty = self.cur_dynasty = Dynasty(initial_validator)
+          # self.nex_dynasty = self.generate_nex_dynasty(self.cur_dynasty.id)
             self.hash = 1
             return
+          
         # If not genesis block, set pre_hash and block_height and etc
         if not timestamp:
             self.timestamp = generate_timestamp()
         else:
             self.timestamp = timestamp
+            
         self.transactions = transactions
         self.pre_hash = parent_hash
         self.height = parent_height + 1
         self.hash = self.__hash__()
+        
         # Generate next dynasty randomly by using parents' current dynasty
         # self.nex_dynasty = self.generate_nex_dynasty(parent.cur_dynasty.id)
         # if parents' cur_dynasty is finalized(meaning the term of one set of validaotrs has expired), then shift to the next dynasty
@@ -83,9 +88,9 @@ class Block():
             #self.hash = self.__hash__()
             #return
         # if parent's cur_dynasty is not ye finalized, then the child's cur and pre dynasty equals to parent's
-        #self.cur_dynasty = parent.cur_dynasty
-        #self.pre_dynasty = parent.pre_dynasty
-        #self.hash = self.__hash__()
+        # self.cur_dynasty = parent.cur_dynasty
+        # self.pre_dynasty = parent.pre_dynasty
+        # self.hash = self.__hash__()
 
     def block_dict(self):
         dictionary = {
@@ -168,7 +173,6 @@ class CasperFFG(Protocol):
     def on_creation(self):
         """
         When this class is being initialized, this method will be invoked.
-        
         Do not override the __init__ function or this module will not work.
         """
 
@@ -329,9 +333,8 @@ class CasperFFG(Protocol):
 
         # print("self.id:",self.id,"time:",time,"time // block_pro_interval % num_validator", (time // block_pro_interval) % num_validator, "time % block_propo:", time % block_pro_interval)
         if self.id == (time // block_pro_interval) % num_validator and time % block_pro_interval == 0:
-            # print("BbbbbbbbBBBBBBBBbbbbbbBBBBBBBBBBbbbbbbbBBBBBBBBBBBBBBbbbbBBBbBBB")
-            # it is time for one node to build a block
-            # the head is the latest descendant block of the highest justified checkpoint
+            # It is time for one node to build a block
+            # The head is the latest descendant block of the highest justified checkpoint
             new_block = Block(self.head.hash, self.head.height, self.current_transactions)
             #self.chain.append(new_block.block_dict())
             #print(self.chain)
@@ -410,15 +413,16 @@ class CasperFFG(Protocol):
         :param fromnode: where is the block from
         :return: true if the block has been processed, false if it lacks some dependencies
         """
-        # use a lock to gurantee the atomic operations on chain
+        
+        # Use a lock to gurantee the atomic operations on chain
         self.block_lock.acquire("accept_block")
+        
         # If we didn't receive the block's parent yet, wait
         if block.pre_hash not in self.processed:
             self.add_dependency(block.pre_hash, block)
             self.block_lock.release("accept_block")
             return False
-
-        # print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+          
         # We receive the block
         self.processed[block.hash] = block
         self.chain.append(block.block_dict())
@@ -448,21 +452,22 @@ class CasperFFG(Protocol):
         return True
 
     def check_head(self, block):
-        """Reorganize the head to stay on the chain with the highest
+        """
+        Reorganize the head to stay on the chain with the highest
         justified checkpoint.
-
         If we are on wrong chain, reset the head to be the highest descendent
         among the chains containing the highest justified checkpoint.
 
         Args:
-            block: latest block processed."""
+            block: latest block processed
+        """
 
-        # we are on the right chain, the head is simply the latest block
+        # We are on the right chain, the head is simply the latest block
         if self.check_ancestor(self.highest_justified_checkpoint,self.tails_closest_checkpoint[block.hash]):
             self.head = block
             self.main_chain_size += 1
 
-        # otherwise, we are not on the right chain
+        # Otherwise, we are not on the right chain
         else:
             # Find the highest descendant of the highest justified checkpoint
             # and set it as head
@@ -482,8 +487,9 @@ class CasperFFG(Protocol):
             self.head = self.processed[max_descendant]
 
     def start_vote_establish_supermajoritylink(self, block):
-        """Called after receiving a block.
-
+        """
+        Called after receiving a block.
+        
         Implement the fork rule:
         maybe send a vote message where target is block
         if we are on the chain containing the justified checkpoint of the
@@ -492,7 +498,7 @@ class CasperFFG(Protocol):
         Args:
             block: last block we processed
         """
-        # print("VvVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV")
+        
         assert block.height % epoch_len == 0, (
             "Block {} is not a checkpoint.".format(block.hash))
 
@@ -500,7 +506,6 @@ class CasperFFG(Protocol):
         target_block = block
         # The source will be the justified checkpoint of greatest height
         source_block = self.highest_justified_checkpoint
-
 
         # If the block is an epoch block of a higher epoch than what we've seen so far
         # This means that it's the first time we see a checkpoint at this height
@@ -532,9 +537,10 @@ class CasperFFG(Protocol):
                 assert self.processed[target_block.hash]
 
     def accept_vote(self, vote, fromnode=None):
-        # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-        """Called on receiving a vote message.
         """
+        Called on receiving a vote message.
+        """
+        
         # print('Node %d: got a vote' % self.id, source.view, prepare.view_source,
         # prepare.blockhash, vote.blockhash in self.processed)
 
@@ -589,7 +595,7 @@ class CasperFFG(Protocol):
         self.vote_count[vote.source_hash][vote.target_hash] = self.vote_count[
                                                         vote.source_hash].get(vote.target_hash, 0) + 1
 
-        # is always the same right now)
+        # Is always the same right now
         # If there are enough votes, process them
         print("vote_count",self.vote_count[vote.source_hash][vote.target_hash],", num to meet:",(num_validator * 2) // 3 )
         if (self.vote_count[vote.source_hash][vote.target_hash] > (num_validator * 2) // 3):
@@ -609,6 +615,7 @@ class CasperFFG(Protocol):
         """
         A new vote is propagated to all the peers on the network (if online)
         """
+        
         # neighbours = db.get_peers()
         route = '/casperffg/votes/receive'
         json_info = {
@@ -623,6 +630,7 @@ class CasperFFG(Protocol):
         :param obj: could be vote or block
         :return: False if the object has already been processed
         """
+        
         if object.hash in self.processed:
             return False
         if isinstance(object, Block):
