@@ -1,4 +1,4 @@
-# casper-ffg
+# Casper-FFG
 Python implementation of Casper the Friendly Finality Gadget consensus
 
 ## Reference
