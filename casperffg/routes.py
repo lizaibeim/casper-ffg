@@ -1,11 +1,3 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Mar 25 19:36:30 2019
-
-@author: Eric
-"""
-
 import os
 import sys
 import time
