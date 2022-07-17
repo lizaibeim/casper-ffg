@@ -56,7 +56,6 @@ class Block():
         :param transactions: the transcations collected by the validator (or on the chain)
         """
 
-
         # If it is the genesis block, then initialize it
         if not parent_hash:
             self.timestamp = get_unix_zero_timestamp()
@@ -91,8 +90,7 @@ class Block():
         # # If parent's cur_dynasty is not ye finalized, then the child's cur and pre dynasty equals to parent's
         # self.cur_dynasty = parent.cur_dynasty
         # self.pre_dynasty = parent.pre_dynasty
-        # self.hash = self.__hash__()
-        
+        # self.hash = self.__hash__() 
         
 
     def block_dict(self):
@@ -108,10 +106,12 @@ class Block():
         }
         return dictionary
 
+      
     @property
     def epoch(self):
         return self.height // epoch_len
 
+      
     def __hash__(self):
         return hash(str(self.timestamp) + str(self.transactions) + str(self.pre_hash) + str(self.height))
 
