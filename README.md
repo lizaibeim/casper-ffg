@@ -1,7 +1,7 @@
 # Casper-FFG
 Python implementation of Casper the Friendly Finality Gadget consensus  
 
-## DEMO
+## Demo
 <sub> start interface </sub>  
 <img width="567" alt="start_interface" src="https://user-images.githubusercontent.com/38242437/184260628-2c94ce18-0f3c-4e19-b778-c096a18152c9.png">
 
