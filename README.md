@@ -1,5 +1,5 @@
 # Casper-FFG
-Python implementation of Casper the Friendly Finality Gadget consensus  
+Python implementation of [Casper the Friendly Finality Gadget consensus](https://arxiv.org/pdf/1710.09437.pdf)
 
 ## Demo
 <sub> start interface </sub>  
