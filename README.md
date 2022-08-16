@@ -18,4 +18,5 @@ Python implementation of [Casper the Friendly Finality Gadget consensus](https:/
 <img width="453" alt="Screenshot 2019-04-24 at 10 47 09" src="https://user-images.githubusercontent.com/38242437/184261194-c861e6ca-f5f9-45a6-87c0-b99ad3b71acc.png">
 
 ## Reference
+https://bitcoin.org/bitcoin.pdf  
 https://arxiv.org/pdf/1710.09437.pdf
