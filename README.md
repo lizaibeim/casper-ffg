@@ -1,5 +1,5 @@
 # Casper-FFG
-This project simulates a blockchain that implements the [CasperFFG]((https://arxiv.org/pdf/1710.09437.pdf)) consensus combined with POW[https://bitcoin.org/bitcoin.pdf] consensus by using Python.
+This project simulates a blockchain that implements the  Casper Friendly Finality Gadget ([CasperFFG](https://arxiv.org/pdf/1710.09437.pdf)) consensus combined with Proof of Work ([POW](https://bitcoin.org/bitcoin.pdf)) consensus by using Python.
 
 ## Demo
 <sub> start interface </sub>  
